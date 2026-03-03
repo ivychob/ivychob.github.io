@@ -24,7 +24,7 @@
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Tiles courtesy of <a href="https://www.openstreetmap.cat" target="_blank">Breton OpenStreetMap Team</a>'
       }).addTo(map);
 
-      $.getJSON("https://rshepard2.github.io/city.geojson").done(function(data) {
+      $.getJSON("https://ivychob.github.io/Lab07/city.geojson").done(function(data) {
         var info = processData(data);
         createPropSymbols(info.timestamps, data);
         createSliderUI(info.timestamps);
