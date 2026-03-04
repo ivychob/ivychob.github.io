@@ -1,4 +1,4 @@
-var Brinton = [
+var BrintonData = [
 { "type": "Feature", "properties": { "name": "Masonic Opera House: What Cheer, IA", "latitude": 41.401397, "longitude": -92.354629, "time": "1/1/1904" }, "geometry": { "type": "Point", "coordinates": [ -92.354629, 41.401397 ] } },
 { "type": "Feature", "properties": { "name": "Masonic Opera House: What Cheer, IA", "latitude": 41.401397, "longitude": -92.354629, "time": "1/2/1904" }, "geometry": { "type": "Point", "coordinates": [ -92.354629, 41.401397 ] } },
 { "type": "Feature", "properties": { "name": "Montezuma Opera House: Montezuma, IA", "latitude": 41.584878, "longitude": -92.527431, "time": "1/4/1904" }, "geometry": { "type": "Point", "coordinates": [ -92.527431, 41.584878 ] } },
