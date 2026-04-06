@@ -3,8 +3,8 @@
     <head>
     <title>Ivy Chobanyan WEBGIS Lab 08</title>
     <script src="https://d3js.org/d3.v5.min.js" charset="utf-8"></script>
-    <script src="https://rshepard2.github.io/Lab9/data/lnkrds.js"></script>
-    <script src="https://rshepard2.github.io/Lab9/data/northeast_lnk_blds.js"></script>
+    <script src="https://ivychob.github.io/Lab08/lancasterRoads.js"></script>
+    <script src="https://dwheaton2011.github.io/Assignment2/bus.js"></script>
     <style>
       body {
         position: absolute;
@@ -27,7 +27,7 @@
     </style>
   </head>
   <body>
-    <h1>Aging Northeast Lincoln Homes</h1><h2></h2>
+    <h1>Accessibility of StarTran Route 52 Bus Stops</h1><br><h2></h2><br>
     <script>
       //width and height of the visualization
       var width = 1000;
@@ -37,6 +37,20 @@
       var minVal = 1900
       var maxVal = 2020
       var ramp = d3.scaleLinear().domain([minVal,maxVal]).range([lowColor,highColor]);
+
+      function sumAccess(sidewalk,cutout,shelter,seating){
+        let yesses = 0
+        yesses += (sidewalk == "Yes" || cutout == "Yes") ? 1 : 0
+        //yesses += cutout == "Yes" ? 1 : 0
+        yesses += shelter == "Yes" ? 1 : 0
+        yesses += seating == "Yes" ? 1 : 0
+
+        return yesses > 2 ? '#1a9641': //colors from ColorBrewer2
+        yesses > 1 ? '#a6d96a':
+        yesses > 0 ? '#fdae61':
+        '#d7191c';
+      };
+
       //create the SVG
       var svg = d3.select( "body" )
       .append( "svg" )
@@ -49,34 +63,34 @@
 
       // Set Projection Parameters
       var albersProjection = d3.geoAlbers()
-        .scale( 2850000 )
+        .scale( 2850000/5 )
         .rotate( [96.6327,0] )
-        .center( [0, 40.8497493] )
+        .center( [-0.1, 40.8497493] )
         .translate( [width/2,height/2] );
       
       var geoPath = d3.geoPath()
         .projection( albersProjection );
 
       g.selectAll( "path" )
-        .data( lnkrds.features )
+        .data( lnk_roads.features )
         .enter()
         .append( "path" )
         .attr( "fill", "#ccc" )
         .attr( "stroke", "#333")
         .attr( "d", geoPath );
       
-      var lnk_json = svg.append( "g" );
-      lnk_json.selectAll( "path" )
-        .data( lnkbldngsjson.features )
+      var bus_stops = svg.append( "g" );
+      bus_stops.selectAll( "path" )
+        .data( bus.features )
         .enter()
         .append( "path" )
-        .attr ( "fill", function(d) { return ramp(d.properties.RESYRBLT) })
+        .attr ( "fill", function(d) { return sumAccess(d.properties.SidewalkAc,d.properties.Cutout,d.properties.Shelter,d.properties.Bench) })
         .attr( "stroke", "#999" )
         .attr( "d", geoPath )
         .attr("class","buildingdata")
         .on("mouseover", function(d){
         //populate h2 with "built in" & the year built field from the json
-        d3.select("h2").text("Built in " + d.properties.RESYRBLT);
+        d3.select("h2").text("Sidewalk Access:" + d.properties.SidewalkAc + " | Cutout: " + d.properties.Cutout + " | Shelter: " + d.properties.Shelter + " | Seating: " + d.properties.Bench);
         d3.select(this).attr("class","buildingdata hover");
         })
         //here, D3 to replace text interactively based on building data
