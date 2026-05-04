@@ -66,6 +66,12 @@
           var popup = '<b>'+ prop['NAME']+'</b><br>Population: ' + prop['POPULATION'];
           feature.layer = layer;
           layer.bindPopup(popup, {maxWidth: "auto"});
+          layer.on('mouseover', function (e) {
+            this.openPopup();
+          });
+          layer.on('mouseout', function (e) {
+              this.closePopup();
+          });
         }
       }; 
 
@@ -119,9 +125,9 @@
         return L.circleMarker(latlng, {
         radius: 4,
         fillColor: "#000",
-        color: "#000",
+        color: "#bdbdbd",
         weight: 1,
-        opacity: 1,
+        opacity: 0.5,
         fillOpacity: 0.8
         });
       }
@@ -219,6 +225,21 @@
       }return div;
     };
 
+    var legendDist = L.control({position: 'bottomright'}); // Try the other lower corner if you prefer.
+   
+    legendDist.onAdd = function (map) {
+      var div = L.DomUtil.create('div', 'legend'),
+      grades = [0, 5, 10, 15, 20, 25, 90]; // break values to define the intervals of population - YOU WILL NEED TO MODIFY IT TO GET THE RIGHT LEGEND BREAKS
+      div.innerHTML = '<b>Distance to Nearest City (miles)<br><br></b>';
+
+      // Loop through the classes or “grades” and generate a label with a colored square for each interval.
+      for (var i = 0; i < grades.length; i++) {
+       div.innerHTML += 
+        '<i style="background:' + getColorByDistance(grades[i] + 1) + '"></i>' + 
+        grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br><br>' : '+');
+      }return div;
+    };
+
     legendPop.addTo(map);
     // Removing the legend when the layer is removed
     map.on('overlayremove', function(eventLayer){
@@ -228,6 +249,9 @@
       if (eventLayer.name == 'Wells per County'){
         map.removeControl(legendWells);
       }
+      if (eventLayer.name == 'Orphaned Wells by Distance'){
+        map.removeControl(legendDist);
+      }
     });
     // Adding the legend when the layer is added
     map.on('overlayadd', function(eventLayer){
@@ -236,6 +260,9 @@
       }
       if (eventLayer.name == 'Wells per County'){
         legendWells.addTo(map);
+      }
+      if (eventLayer.name == 'Orphaned Wells by Distance'){
+        legendDist.addTo(map);
       }
     });
   </script>
